@@ -27,9 +27,16 @@ variable "periodic_sync_cron" {
   default     = "* * * * *"
 }
 
+variable "supabase_database_password" {
+  type        = string
+  description = "Database password for Supabase PostgreSQL"
+  sensitive   = true
+  default     = "MyLalaE2026!"
+}
+
 variable "container_image" {
   type        = string
   description = "Docker image for Cloud Run Web API"
-  default     = "gcr.io/google-samples/hello-app:1.0"
+  default     = "gcr.io/my-project-for-bigquery-445809/lalae-web:latest"
 }
 

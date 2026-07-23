@@ -36,6 +36,10 @@ resource "google_cloud_run_v2_service" "web_api" {
         name  = "ENABLE_CLOUD_TASKS"
         value = "true"
       }
+      env {
+        name  = "SUPABASE_DATABASE_PASSWORD"
+        value = var.supabase_database_password
+      }
     }
   }
 
