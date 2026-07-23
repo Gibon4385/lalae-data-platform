@@ -1,6 +1,6 @@
 # 1. Connection Sync Cloud Tasks Queue (連線同步任務佇列)
 resource "google_cloud_tasks_queue" "connection_sync_queue" {
-  name     = "connection-sync-queue"
+  name     = "connection-sync-queue-v2"
   location = var.region
 
   rate_limits {
@@ -18,7 +18,7 @@ resource "google_cloud_tasks_queue" "connection_sync_queue" {
 
 # 2. Query Execution Cloud Tasks Queue (BigQuery SQL 查詢與導出佇列)
 resource "google_cloud_tasks_queue" "query_execution_queue" {
-  name     = "query-execution-queue"
+  name     = "query-execution-queue-v2"
   location = var.region
 
   rate_limits {
@@ -36,7 +36,7 @@ resource "google_cloud_tasks_queue" "query_execution_queue" {
 
 # 3. Client Dataset Creation Queue (Client Dataset 開闢佇列)
 resource "google_cloud_tasks_queue" "client_dataset_queue" {
-  name     = "client-dataset-queue"
+  name     = "client-dataset-queue-v2"
   location = var.region
 
   rate_limits {

@@ -63,7 +63,7 @@ def dispatch_connection_sync(connection_id: int, user_id: int = None, execution_
 
     if ENABLE_CLOUD_TASKS:
         success = _create_gcp_cloud_task(
-            queue_name="connection-sync-queue",
+            queue_name=os.getenv("CONNECTION_SYNC_QUEUE", "connection-sync-queue-v2"),
             endpoint_path="/task-runner/sync-connection/",
             payload=payload
         )
@@ -83,7 +83,7 @@ def dispatch_query_execution(execution_id: int):
 
     if ENABLE_CLOUD_TASKS:
         success = _create_gcp_cloud_task(
-            queue_name="query-execution-queue",
+            queue_name=os.getenv("QUERY_EXECUTION_QUEUE", "query-execution-queue-v2"),
             endpoint_path="/task-runner/run-query/",
             payload=payload
         )
@@ -103,7 +103,7 @@ def dispatch_client_dataset_creation(dataset_id: str, user_id: int):
 
     if ENABLE_CLOUD_TASKS:
         success = _create_gcp_cloud_task(
-            queue_name="client-dataset-queue",
+            queue_name=os.getenv("CLIENT_DATASET_QUEUE", "client-dataset-queue-v2"),
             endpoint_path="/task-runner/create-client-dataset/",
             payload=payload
         )
