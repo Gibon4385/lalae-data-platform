@@ -218,6 +218,40 @@ const mockFBAllFields = {
   }
 };
 
+const mockQueryExecutionHistoryResponse = {
+  status: "success",
+  executions: [
+    {
+      id: 501,
+      query: 201,
+      executed_at: "2026-07-23T12:00:00Z",
+      completed_at: "2026-07-23T12:00:02Z",
+      status: "SUCCESS",
+      result_rows_count: 148,
+      result_data_csv: "date,campaign_name,spend\n2026-07-23,Summer Promo,1250",
+      error_message: null,
+      triggered_by: "Cloud Scheduler (Periodic)",
+      result_output_link: "https://docs.google.com/spreadsheets/d/mock-sheet-id",
+      result_message: "148 rows exported to Google Sheets",
+      result_storage_path: "gs://bigquery-exports/query_201.csv"
+    },
+    {
+      id: 502,
+      query: 201,
+      executed_at: "2026-07-22T12:00:00Z",
+      completed_at: "2026-07-22T12:00:01Z",
+      status: "SUCCESS",
+      result_rows_count: 132,
+      result_data_csv: "date,campaign_name,spend\n2026-07-22,Summer Promo,1180",
+      error_message: null,
+      triggered_by: "User Manual Run",
+      result_output_link: null,
+      result_message: "132 rows fetched",
+      result_storage_path: null
+    }
+  ]
+};
+
 const mockDashboardData = {
   clients: mockClients,
   connections: mockConnections,
@@ -235,7 +269,9 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('google-ads-resources')) {
+        if (url.includes('execution_history') || url.includes('/history')) {
+          payload = mockQueryExecutionHistoryResponse;
+        } else if (url.includes('google-ads-resources')) {
           payload = mockGoogleAdsResources;
         } else if (url.includes('get-compatible-google-ads-fields')) {
           payload = mockGoogleAdsCompatibleFields;
@@ -249,7 +285,7 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
           payload = mockQueryResult;
         } else if (url.includes('/clients/')) {
           const idMatch = url.match(/\/clients\/(\d+)/);
-          payload = idMatch ? (mockClients.find(c => c.id === parseInt(idMatch[1])) || mockClients[0]) : mockClients;
+          payload = idMatch ? (mockClients.find(c => c.id === idMatch[1]) || mockClients[0]) : mockClients;
         } else if (url.includes('/connections/')) {
           const idMatch = url.match(/\/connections\/(\d+)/);
           payload = idMatch ? (mockConnections.find(c => c.id === parseInt(idMatch[1])) || mockConnections[0]) : mockConnections;
