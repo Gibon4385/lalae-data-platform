@@ -46,10 +46,11 @@ const GoogleSheetIcon = () => (
 // }
 
 const getSourceStyle = (sourceName: string) => {
-    if (sourceName.includes('GOOGLE_ADS')) return { logo: GoogleIcon, color: 'blue' };
-    if (sourceName.includes('FACEBOOK_ADS')) return { logo: FacebookIcon, color: 'blue' };
-    if (sourceName.includes('GOOGLE_SHEET')) return { logo: GoogleSheetIcon, color: 'green' };
-    return { logo: sourceName.charAt(0), color: 'gray' };
+    const upperName = (sourceName || '').toUpperCase();
+    if (upperName.includes('GOOGLE_ADS')) return { logo: GoogleIcon, color: 'blue' };
+    if (upperName.includes('FACEBOOK_ADS')) return { logo: FacebookIcon, color: 'blue' };
+    if (upperName.includes('GOOGLE_SHEET')) return { logo: GoogleSheetIcon, color: 'green' };
+    return { logo: sourceName ? sourceName.charAt(0) : '?', color: 'gray' };
 }
 
 export default function SelectDataSourceStep({
@@ -126,10 +127,14 @@ export default function SelectDataSourceStep({
                             <div className="text-center">
                                 <div
                                     className={`w-16 h-16 mx-auto mb-4 rounded-xl flex items-center justify-center text-2xl font-bold ${
-                                        color === "blue" ? "bg-blue-500/20 text-blue-400" : "bg-green-500/20 text-green-400"
+                                        color === "blue"
+                                            ? "bg-blue-500/20 text-blue-400"
+                                            : color === "green"
+                                            ? "bg-green-500/20 text-green-400"
+                                            : "bg-gray-500/20 text-gray-400"
                                     }`}
                                 >
-                                    <Logo />
+                                    {typeof Logo === 'string' ? <span>{Logo}</span> : <Logo />}
                                 </div>
                                 <h3 className="text-white font-semibold">{source.display_name}</h3>
                                 {selectedDataSource?.id === source.id && (

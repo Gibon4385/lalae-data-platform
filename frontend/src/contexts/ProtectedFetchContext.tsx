@@ -19,6 +19,12 @@ const mockClients = [
   { id: "3", name: "OmniMedia Ads Group", bigquery_dataset_id: "client_omnimedia_ads_2026", is_active: true, created_at: "2026-03-10T14:15:00Z" },
 ];
 
+const mockDataSources = [
+  { id: 1, name: "GOOGLE_ADS", display_name: "Google Ads" },
+  { id: 2, name: "FACEBOOK_ADS", display_name: "Facebook Ads" },
+  { id: 3, name: "GOOGLE_SHEET", display_name: "Google Sheets" },
+];
+
 const mockConnections = [
   {
     id: 101,
@@ -209,6 +215,11 @@ const mockSocialAccounts = [
   }
 ];
 
+const mockFBAdAccounts = [
+  { id: "act_9876543210", name: "LalaE Shop FB Ad Account" },
+  { id: "act_1234567890", name: "CyberTech FB Ad Account" }
+];
+
 const mockFBAllFields = {
   account: {
     fields: [
@@ -356,7 +367,15 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('/connections/') && url.includes('executions')) {
+        if (url.includes('/connections/datasources')) {
+          const match = url.match(/\/connections\/datasources\/([^\/]+)\/?$/);
+          if (match && match[1] && match[1] !== 'datasources') {
+            const dsName = match[1];
+            payload = mockDataSources.find(ds => ds.name === dsName || ds.id === Number(dsName)) || { id: 1, name: dsName, display_name: dsName };
+          } else {
+            payload = mockDataSources;
+          }
+        } else if (url.includes('/connections/') && url.includes('executions')) {
           payload = mockConnectionExecutionsList;
         } else if (url.includes('/queries/') && url.includes('executions')) {
           payload = mockQueryExecutionHistoryResponse;
