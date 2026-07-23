@@ -20,9 +20,9 @@ const mockClients = [
 ];
 
 const mockConnections = [
-  { id: 101, name: "Google Ads Core Sync", client_name: "LalaE E-commerce Brand", data_source_name: "Google Ads", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
-  { id: 102, name: "Facebook Ads Conversions", client_name: "CyberTech AI Solution", data_source_name: "Facebook Ads", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
-  { id: 103, name: "Google Analytics 4 Export", client_name: "OmniMedia Ads Group", data_source_name: "GA4", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
+  { id: 101, name: "Google Ads Core Sync", client_name: "LalaE E-commerce Brand", data_source: { id: 1, name: "Google Ads", display_name: "Google Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
+  { id: 102, name: "Facebook Ads Conversions", client_name: "CyberTech AI Solution", data_source: { id: 2, name: "Facebook Ads", display_name: "Facebook Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
+  { id: 103, name: "Google Analytics 4 Export", client_name: "OmniMedia Ads Group", data_source: { id: 3, name: "GA4", display_name: "Google Analytics 4" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
 ];
 
 const mockQueries = [
