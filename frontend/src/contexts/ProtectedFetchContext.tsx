@@ -39,6 +39,57 @@ const mockQueryExecutions = [
   { id: 401, query_name: "Daily Ad Spend & ROAS Aggregator", status: "SUCCESS", executed_at: "2026-07-23T12:05:00Z", execution_time: 1.25 },
 ];
 
+const mockSchema = {
+  tables: [
+    {
+      name: "facebook_campaign_performance",
+      columns: [
+        { name: "date", type: "DATE" },
+        { name: "campaign_id", type: "STRING" },
+        { name: "campaign_name", type: "STRING" },
+        { name: "impressions", type: "INTEGER" },
+        { name: "clicks", type: "INTEGER" },
+        { name: "spend", type: "FLOAT" },
+        { name: "conversions", type: "INTEGER" }
+      ]
+    },
+    {
+      name: "google_ads_daily_stats",
+      columns: [
+        { name: "date", type: "DATE" },
+        { name: "ad_group_id", type: "STRING" },
+        { name: "ad_group_name", type: "STRING" },
+        { name: "cost", type: "FLOAT" },
+        { name: "conversions", type: "INTEGER" },
+        { name: "roas", type: "FLOAT" }
+      ]
+    },
+    {
+      name: "orders_master",
+      columns: [
+        { name: "order_id", type: "STRING" },
+        { name: "user_id", type: "STRING" },
+        { name: "created_at", type: "TIMESTAMP" },
+        { name: "total_amount", type: "FLOAT" },
+        { name: "payment_status", type: "STRING" }
+      ]
+    }
+  ]
+};
+
+const mockQueryResult = {
+  status: "success",
+  columns: ["date", "campaign_name", "spend", "conversions", "roas"],
+  previewData: [
+    ["2026-07-23", "Summer Promo 2026", "$1,250.00", "148", "3.85x"],
+    ["2026-07-22", "Summer Promo 2026", "$1,180.50", "132", "3.60x"],
+    ["2026-07-21", "Retargeting Ads V2", "$850.00", "94", "4.12x"],
+    ["2026-07-20", "Brand Awareness AI", "$2,100.00", "210", "2.95x"],
+    ["2026-07-19", "Brand Awareness AI", "$1,950.00", "185", "3.10x"]
+  ],
+  message: "Query executed successfully. Returned 5 rows in 1.2s."
+};
+
 const mockDashboardData = {
   clients: mockClients,
   connections: mockConnections,
@@ -56,7 +107,11 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('/clients/')) {
+        if (url.includes('/schema')) {
+          payload = mockSchema;
+        } else if (url.includes('/test') || url.includes('/run') || url.includes('/preview')) {
+          payload = mockQueryResult;
+        } else if (url.includes('/clients/')) {
           payload = mockClients;
         } else if (url.includes('/connections/')) {
           payload = mockConnections;
