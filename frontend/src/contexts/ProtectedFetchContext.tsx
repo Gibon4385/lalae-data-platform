@@ -188,12 +188,46 @@ const mockGoogleAdsCompatibleFields = {
   ]
 };
 
-const mockFBAdAccounts = [
-  { id: "act_9876543210", name: "LalaE Global Facebook Ads (act_9876543210)" },
-  { id: "act_1234567890", name: "CyberTech Taiwan Marketing (act_1234567890)" }
+const mockSocialAccounts = [
+  {
+    id: "social-acc-google-1",
+    provider: "google",
+    uid: "google-uid-1001",
+    email: "lalae-marketing-google@example.com",
+    name: "LalaE Official Google Ads Account",
+    is_authorized: true,
+    last_used: "2026-07-23T12:00:00Z"
+  },
+  {
+    id: "social-acc-fb-1",
+    provider: "facebook",
+    uid: "facebook-uid-2002",
+    email: "lalae-marketing-fb@example.com",
+    name: "LalaE Official Facebook Ads Account",
+    is_authorized: true,
+    last_used: "2026-07-23T12:00:00Z"
+  }
 ];
 
 const mockFBAllFields = {
+  account: {
+    fields: [
+      { name: "account_name", label: "Account Name (帳號名稱)" },
+      { name: "spend", label: "Spend (花費金額)" },
+      { name: "impressions", label: "Impressions (曝光數)" },
+      { name: "clicks", label: "Clicks (點擊數)" },
+      { name: "reach", label: "Reach (觸及人數)" },
+      { name: "conversions", label: "Conversions (轉化數)" }
+    ],
+    breakdowns: [
+      { name: "age", label: "Age (年齡層)" },
+      { name: "gender", label: "Gender (性別)" },
+      { name: "country", label: "Country (國家)" }
+    ],
+    action_breakdowns: [
+      { name: "action_type", label: "Action Type (動作類型)" }
+    ]
+  },
   campaign: {
     fields: [
       { name: "campaign_name", label: "Campaign Name (廣告活動名稱)" },
@@ -214,6 +248,40 @@ const mockFBAllFields = {
     action_breakdowns: [
       { name: "action_type", label: "Action Type (動作類型)" },
       { name: "action_device", label: "Action Device (動作裝置)" }
+    ]
+  },
+  adset: {
+    fields: [
+      { name: "adset_name", label: "AdSet Name (廣告組合名稱)" },
+      { name: "spend", label: "Spend (花費金額)" },
+      { name: "impressions", label: "Impressions (曝光數)" },
+      { name: "clicks", label: "Clicks (點擊數)" },
+      { name: "cpc", label: "CPC (點擊成本)" },
+      { name: "cpm", label: "CPM (千次曝光成本)" }
+    ],
+    breakdowns: [
+      { name: "age", label: "Age (年齡層)" },
+      { name: "gender", label: "Gender (性別)" },
+      { name: "country", label: "Country (國家)" }
+    ],
+    action_breakdowns: [
+      { name: "action_type", label: "Action Type (動作類型)" }
+    ]
+  },
+  ad: {
+    fields: [
+      { name: "ad_name", label: "Ad Name (單一廣告名稱)" },
+      { name: "spend", label: "Spend (花費金額)" },
+      { name: "impressions", label: "Impressions (曝光數)" },
+      { name: "clicks", label: "Clicks (點擊數)" },
+      { name: "ctr", label: "CTR (點擊率)" }
+    ],
+    breakdowns: [
+      { name: "age", label: "Age (年齡層)" },
+      { name: "gender", label: "Gender (性別)" }
+    ],
+    action_breakdowns: [
+      { name: "action_type", label: "Action Type (動作類型)" }
     ]
   }
 };
@@ -294,6 +362,8 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
           payload = mockQueryExecutionHistoryResponse;
         } else if (url.includes('execution_history') || url.includes('/history')) {
           payload = mockQueryExecutionHistoryResponse;
+        } else if (url.includes('social_accounts')) {
+          payload = mockSocialAccounts;
         } else if (url.includes('google-ads-resources')) {
           payload = mockGoogleAdsResources;
         } else if (url.includes('get-compatible-google-ads-fields')) {
