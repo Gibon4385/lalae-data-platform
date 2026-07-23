@@ -14,9 +14,9 @@ const ProtectedFetchContext = createContext<{ protectedFetch: ProtectedFetch | n
 
 // 建立 Provider 元件，這就是你說的「可以通行的環境」
 const mockClients = [
-  { id: 1, name: "LalaE E-commerce Brand", bigquery_dataset_id: "client_lalae_shop_2026", is_active: true, created_at: "2026-01-15T08:00:00Z" },
-  { id: 2, name: "CyberTech AI Solution", bigquery_dataset_id: "client_cybertech_ai_2026", is_active: true, created_at: "2026-02-01T10:30:00Z" },
-  { id: 3, name: "OmniMedia Ads Group", bigquery_dataset_id: "client_omnimedia_ads_2026", is_active: true, created_at: "2026-03-10T14:15:00Z" },
+  { id: "1", name: "LalaE E-commerce Brand", bigquery_dataset_id: "client_lalae_shop_2026", is_active: true, created_at: "2026-01-15T08:00:00Z" },
+  { id: "2", name: "CyberTech AI Solution", bigquery_dataset_id: "client_cybertech_ai_2026", is_active: true, created_at: "2026-02-01T10:30:00Z" },
+  { id: "3", name: "OmniMedia Ads Group", bigquery_dataset_id: "client_omnimedia_ads_2026", is_active: true, created_at: "2026-03-10T14:15:00Z" },
 ];
 
 const mockConnections = [
@@ -83,6 +83,21 @@ const mockQueries = [
   { id: 201, name: "Daily Ad Spend & ROAS Aggregator", displayName: "Daily Ad Spend & ROAS Aggregator", client_name: "LalaE E-commerce Brand", config: { sql_query: "SELECT date, SUM(cost) as total_cost FROM `my-project.lalae.ad_data` GROUP BY date", schedule_type: "PERIODIC", cron_schedule: "0 0 * * *", output_target: "GOOGLE_SHEET" }, created_at: "2026-04-01T09:00:00Z" },
   { id: 202, name: "Customer Lifetime Value Predictor", displayName: "Customer Lifetime Value Predictor", client_name: "CyberTech AI Solution", config: { sql_query: "SELECT user_id, SUM(amount) as ltv FROM `my-project.cybertech.orders` GROUP BY user_id", schedule_type: "ONCE", cron_schedule: null, output_target: "NONE" }, created_at: "2026-05-12T16:20:00Z" },
 ];
+
+const mockQueryListResponse = {
+  count: mockQueries.length,
+  next: null,
+  previous: null,
+  results: mockQueries,
+  current_dataset: "client_lalae_shop_2026",
+  client_datasets: mockClients.map(c => ({
+    id: c.id,
+    name: c.name,
+    bigquery_dataset_id: c.bigquery_dataset_id
+  })),
+  current_client_name: "LalaE E-commerce Brand",
+  current_access_level: "OWNER"
+};
 
 const mockConnectionExecutions = [
   { id: 301, connection_name: "Google Ads Core Sync", status: "SUCCESS", records_synced: 12450, executed_at: "2026-07-23T12:00:00Z", duration_seconds: 4.2 },
@@ -240,7 +255,7 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
           payload = idMatch ? (mockConnections.find(c => c.id === parseInt(idMatch[1])) || mockConnections[0]) : mockConnections;
         } else if (url.includes('/queries/')) {
           const idMatch = url.match(/\/queries\/(\d+)/);
-          payload = idMatch ? (mockQueries.find(q => q.id === parseInt(idMatch[1])) || mockQueries[0]) : mockQueries;
+          payload = idMatch ? (mockQueries.find(q => q.id === parseInt(idMatch[1])) || mockQueries[0]) : mockQueryListResponse;
         } else if (url.includes('/dashboard/')) {
           payload = mockDashboardData;
         }
