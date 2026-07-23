@@ -42,12 +42,6 @@ resource "google_cloud_run_v2_service" "web_api" {
       }
     }
   }
-
-  lifecycle {
-    ignore_changes = [
-      template[0].containers[0].image, # 允許 CI/CD 後續自動更新 Image Tag
-    ]
-  }
 }
 
 # 允許公開/無障礙訪問 Cloud Run Web API（若需驗證可透過應用程式層或 IAM）
