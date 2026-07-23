@@ -96,3 +96,10 @@ npm run dev
 ### 3. 🚀 バックエンドおよびフロントエンドのデプロイ
 * **バックエンド**: GCP Cloud Build で Docker イメージをビルドし Cloud Run へデプロイ。
 * **フロントエンド**: フロントエンドの `.env` で `NEXT_PUBLIC_USE_MOCK=false` に変更し `NEXT_PUBLIC_API_URL` を Cloud Run の URL に指定後、Vercel へデプロイ。
+
+### 4. 🔑 サードパーティ API 認証情報および OAuth トークンの概要
+本番環境で外部 API と連携する際は、`backend/.env` に以下の認証情報を設定します：
+* **Google Ads**: `GOOGLE_ADS_DEVELOPER_TOKEN`（開発者トークン）および OAuth Client ID/Secret が必要。認証後、アクセストークンおよびリフレッシュトークンは自動管理されます。
+* **Facebook Ads**: OAuth 経由の広告アカウントアクセス用に `FACEBOOK_APP_ID` および `FACEBOOK_APP_SECRET`（Meta アプリ認証情報）が必要。
+* **Google Sheets**: SQL データの読み込みおよび自動出力用に、指定の GCP サービスアカウント Email を対象スプレッドシートの共有編集者として追加する必要があります。
+

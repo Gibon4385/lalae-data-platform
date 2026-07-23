@@ -95,3 +95,10 @@ To deploy to production with real Google Ads / Facebook / BigQuery integrations:
 ### 3. 🚀 Application Deployment
 * **Backend**: Build and deploy container image to GCP Cloud Run via Cloud Build.
 * **Frontend**: Set `NEXT_PUBLIC_USE_MOCK=false` and point `NEXT_PUBLIC_API_URL` to your Cloud Run URL, then deploy to Vercel.
+
+### 4. 🔑 Third-Party API Credentials & OAuth Tokens Summary
+When connecting to production APIs, configure the following in `backend/.env`:
+* **Google Ads**: Requires `GOOGLE_ADS_DEVELOPER_TOKEN` and OAuth Client ID/Secret. Tokens (Access & Refresh) are managed automatically after user authorization.
+* **Facebook Ads**: Requires `FACEBOOK_APP_ID` and `FACEBOOK_APP_SECRET` (Meta App Credentials) for OAuth account access.
+* **Google Sheets**: Requires sharing the target Google Sheet with the designated GCP Service Account Email (as Editor) for SQL data reading and export.
+

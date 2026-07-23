@@ -97,3 +97,10 @@ npm run dev
 ### 3. 🚀 後端與前端上線
 * **後端打包**：使用 GCP Cloud Build 打包 Docker 映像檔並部署至 Cloud Run。
 * **前端發佈**：在前端 `.env` 中設定 `NEXT_PUBLIC_USE_MOCK=false` 並將 `NEXT_PUBLIC_API_URL` 指向 Cloud Run 服務網址，推播至 Vercel 即可完成全自動化生產環境上線！
+
+### 4. 🔑 第三方 API 金鑰與 OAuth 權杖摘要
+連線真實平台時，需於 `backend/.env` 填入相應認證資訊：
+* **Google Ads**：需提供 `GOOGLE_ADS_DEVELOPER_TOKEN`（開發者權牌）與 OAuth Client ID/Secret，使用者登入授權後系統自動維護 Access & Refresh Tokens。
+* **Facebook Ads**：需提供 `FACEBOOK_APP_ID` 與 `FACEBOOK_APP_SECRET`（Meta 應用程式憑證），透過 OAuth 取得廣告帳號存取權。
+* **Google Sheets**：需將指定的 GCP Service Account Email 新增為目標試算表的共用編輯者，供系統進行讀寫與 SQL 輸出。
+
