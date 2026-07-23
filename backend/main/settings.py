@@ -384,19 +384,11 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# 為了讓 Next.js (localhost:3000) 能收到並回傳 Django (localhost:8000) 的 cookie，
-# 在開發時，我們需要放寬 SameSite 設定。
-# 注意：在正式上線環境 (production) 且使用不同網域時，需要更嚴謹的設定。
-SESSION_COOKIE_SAMESITE = 'None'
-# CSRF_COOKIE_SAMESITE = 'None'
-
-# CSRF_TRUSTED_ORIGINS = [
-#     'https://30e1-114-24-81-73.ngrok-free.app',
-#     "http://127.0.0.1:3000",
-#     "https://30e1-114-24-81-73.ngrok-free.app",
-# ]
-
-SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SAMESITE = 'Lax'
+else:
+    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SECURE = True
 
 
