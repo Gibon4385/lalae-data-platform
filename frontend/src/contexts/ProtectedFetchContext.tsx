@@ -20,9 +20,63 @@ const mockClients = [
 ];
 
 const mockConnections = [
-  { id: 101, name: "Google Ads Core Sync", display_name: "Google Ads Core Sync", target_dataset_id: "client_lalae_shop_2026", client_name: "LalaE E-commerce Brand", data_source: { id: 1, name: "Google Ads", display_name: "Google Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
-  { id: 102, name: "Facebook Ads Conversions", display_name: "Facebook Ads Conversions", target_dataset_id: "client_cybertech_ai_2026", client_name: "CyberTech AI Solution", data_source: { id: 2, name: "Facebook Ads", display_name: "Facebook Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
-  { id: 103, name: "Google Analytics 4 Export", display_name: "Google Analytics 4 Export", target_dataset_id: "client_omnimedia_ads_2026", client_name: "OmniMedia Ads Group", data_source: { id: 3, name: "GA4", display_name: "Google Analytics 4" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
+  {
+    id: 101,
+    name: "Google Ads Core Sync",
+    display_name: "Google Ads Core Sync",
+    target_dataset_id: "client_lalae_shop_2026",
+    client_name: "LalaE E-commerce Brand",
+    data_source: { id: 1, name: "Google Ads", display_name: "Google Ads" },
+    status: "ACTIVE",
+    is_enabled: true,
+    last_run_at: "2026-07-23T12:00:00Z",
+    config: {
+      customer_id: "123-456-7890",
+      resource_name: "campaign",
+      metrics: ["metrics.clicks", "metrics.impressions", "metrics.cost_micros", "metrics.conversions"],
+      segments: ["segments.date"],
+      attributes: ["campaign.id", "campaign.name", "campaign.status"],
+      sync_frequency: "daily",
+      sync_time: "08:00"
+    }
+  },
+  {
+    id: 102,
+    name: "Facebook Ads Conversions",
+    display_name: "Facebook Ads Conversions",
+    target_dataset_id: "client_cybertech_ai_2026",
+    client_name: "CyberTech AI Solution",
+    data_source: { id: 2, name: "Facebook Ads", display_name: "Facebook Ads" },
+    status: "ACTIVE",
+    is_enabled: true,
+    last_run_at: "2026-07-23T11:45:00Z",
+    config: {
+      facebook_ad_account_id: "act_9876543210",
+      campaign_ids: ["23849102930", "23849102931"],
+      fields: ["campaign_name", "spend", "impressions", "clicks", "conversions", "roas"],
+      date_preset: "last_30d",
+      sync_frequency: "daily",
+      sync_time: "09:00"
+    }
+  },
+  {
+    id: 103,
+    name: "Google Analytics 4 Export",
+    display_name: "Google Analytics 4 Export",
+    target_dataset_id: "client_omnimedia_ads_2026",
+    client_name: "OmniMedia Ads Group",
+    data_source: { id: 3, name: "GA4", display_name: "Google Analytics 4" },
+    status: "ACTIVE",
+    is_enabled: true,
+    last_run_at: "2026-07-23T10:30:00Z",
+    config: {
+      property_id: "properties/312456789",
+      metrics: ["activeUsers", "screenPageViews", "sessions", "conversions"],
+      dimensions: ["date", "deviceCategory", "country"],
+      sync_frequency: "daily",
+      sync_time: "07:30"
+    }
+  },
 ];
 
 const mockQueries = [
