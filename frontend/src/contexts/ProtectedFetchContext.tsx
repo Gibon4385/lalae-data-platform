@@ -13,17 +13,60 @@ const ProtectedFetchContext = createContext<{ protectedFetch: ProtectedFetch | n
 });
 
 // 建立 Provider 元件，這就是你說的「可以通行的環境」
+const mockClients = [
+  { id: 1, name: "LalaE E-commerce Brand", bigquery_dataset_id: "client_lalae_shop_2026", is_active: true, created_at: "2026-01-15T08:00:00Z" },
+  { id: 2, name: "CyberTech AI Solution", bigquery_dataset_id: "client_cybertech_ai_2026", is_active: true, created_at: "2026-02-01T10:30:00Z" },
+  { id: 3, name: "OmniMedia Ads Group", bigquery_dataset_id: "client_omnimedia_ads_2026", is_active: true, created_at: "2026-03-10T14:15:00Z" },
+];
+
+const mockConnections = [
+  { id: 101, name: "Google Ads Core Sync", client_name: "LalaE E-commerce Brand", data_source_name: "Google Ads", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
+  { id: 102, name: "Facebook Ads Conversions", client_name: "CyberTech AI Solution", data_source_name: "Facebook Ads", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
+  { id: 103, name: "Google Analytics 4 Export", client_name: "OmniMedia Ads Group", data_source_name: "GA4", status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
+];
+
+const mockQueries = [
+  { id: 201, name: "Daily Ad Spend & ROAS Aggregator", client_name: "LalaE E-commerce Brand", query_text: "SELECT date, SUM(cost) as total_cost FROM `my-project.lalae.ad_data` GROUP BY date", created_at: "2026-04-01T09:00:00Z" },
+  { id: 202, name: "Customer Lifetime Value Predictor", client_name: "CyberTech AI Solution", query_text: "SELECT user_id, SUM(amount) as ltv FROM `my-project.cybertech.orders` GROUP BY user_id", created_at: "2026-05-12T16:20:00Z" },
+];
+
+const mockConnectionExecutions = [
+  { id: 301, connection_name: "Google Ads Core Sync", status: "SUCCESS", records_synced: 12450, executed_at: "2026-07-23T12:00:00Z", duration_seconds: 4.2 },
+  { id: 302, connection_name: "Facebook Ads Conversions", status: "SUCCESS", records_synced: 8920, executed_at: "2026-07-23T11:45:00Z", duration_seconds: 3.8 },
+];
+
+const mockQueryExecutions = [
+  { id: 401, query_name: "Daily Ad Spend & ROAS Aggregator", status: "SUCCESS", executed_at: "2026-07-23T12:05:00Z", execution_time: 1.25 },
+];
+
+const mockDashboardData = {
+  clients: mockClients,
+  connections: mockConnections,
+  queries: mockQueries,
+  recentConnectionExecutions: mockConnectionExecutions,
+  recentQueryExecutions: mockQueryExecutions,
+};
+
 export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
 
-  // 使用 useCallback 來建立一個穩定的函式
-  // 只有當 session?.accessToken 改變時，這個函式才會被重新建立
   const protectedFetch = useCallback(
     async (url: string, options: RequestInit = {}) => {
-      // MOCK 模式：免去 Token 防護檢查，直接允許請求
+      // MOCK 模式：免去 Token 防護檢查，直接傳回擬真 Mock 資料
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
-        return new Response(JSON.stringify({ status: "success", data: [] }), {
+        let payload: any = mockDashboardData;
+        if (url.includes('/clients/')) {
+          payload = mockClients;
+        } else if (url.includes('/connections/')) {
+          payload = mockConnections;
+        } else if (url.includes('/queries/')) {
+          payload = mockQueries;
+        } else if (url.includes('/dashboard/')) {
+          payload = mockDashboardData;
+        }
+
+        return new Response(JSON.stringify(payload), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
