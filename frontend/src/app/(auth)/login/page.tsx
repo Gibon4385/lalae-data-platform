@@ -94,12 +94,22 @@ export default function LoginPage() {
               <p className="text-gray-400">Access your data command center</p>
             </div>
 
-            <div className="flex items-center justify-center mb-2 border border-orange-400/50">
-              <p className=" text-left p-2">
-              It's test mode. You can use this information to log in. <br />
-              ID: lalae-tester@example.com <br />
-              PW: iamtester12345 <br />
+            <div className="flex flex-col items-center justify-center mb-4 border border-orange-400/50 p-3 rounded-lg bg-orange-950/20">
+              <p className="text-left text-sm text-gray-300">
+                It's test mode. You can use this information to log in: <br />
+                <span className="text-orange-400 font-mono">ID: lalae-tester@example.com</span> <br />
+                <span className="text-orange-400 font-mono">PW: iamtester12345</span>
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail("lalae-tester@example.com");
+                  setPassword("iamtester12345");
+                }}
+                className="mt-2 text-xs bg-orange-500/20 hover:bg-orange-500/40 text-orange-300 border border-orange-500/40 px-3 py-1.5 rounded transition-all duration-200 hover:scale-105"
+              >
+                ⚡ 一鍵自動帶入測試帳密
+              </button>
             </div>
 
             {/* Login Form */}

@@ -41,7 +41,24 @@ const authOptions: AuthOptions = {
           return null;
         }
 
-        try {
+        // MOCK 模式：不發送後端請求，直接通過驗證
+        if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
+          console.log('[NextAuth] Using MOCK_MODE for credentials authentication');
+          return {
+            id: "1",
+            email: credentials.email || "lalae-tester@example.com",
+            name: "lalae-tester",
+            user: {
+              pk: 1,
+              username: "lalae-tester",
+              email: credentials.email || "lalae-tester@example.com",
+              first_name: "LalaE",
+              last_name: "Tester",
+            },
+            access_token: "mock-jwt-access-token-12345",
+            refresh_token: "mock-jwt-refresh-token-12345",
+          };
+        }
           // console.log('Attempting login with dj-rest-auth:', { 
           //   email: credentials.email,
           //   url: `${process.env.NEXT_PUBLIC_TO_BACKEND_URL}/auth/login/`
