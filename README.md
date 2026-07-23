@@ -1,73 +1,96 @@
 # LaLaE Data Platform
 
-[Web Link](https://v0-data-platform-test.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-orange?style=for-the-badge&logo=vercel)](https://v0-data-platform-test.vercel.app/)
+[![GCP Architecture](https://img.shields.io/badge/GCP-Serverless-blue?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/)
+[![Language: Chinese](https://img.shields.io/badge/Document-繁體中文-green)](./README_ZH.md)
 
-LaLaE is a data platform designed for marketers to seamlessly connect their **Google Ads**, **Facebook Ads**, and **Google Sheets** data. It enables users to **clean, transform, and export data via SQL**, significantly reducing the time spent on manual data preparation.
+> **An All-in-One Automated ETL Data Pipeline Platform for Marketing & Data Teams**  
+> Connect multi-channel ad APIs, customize requested fields and metrics, clean and transform data with BigQuery SQL, and automatically export scheduled results to Google Sheets.
 
-The platform is built on **Google Cloud Platform (GCP)** and leverages **BigQuery** for data storage and processing. Below is an overview of its key features.
+---
 
-## Dashboard
+## 🌟 Key Features & Business Value
 
-The landing page after login provides an at-a-glance view of the entire data pipeline, including:
+* 🔗 **Automated Cross-Channel API Integration**: Securely connect and sync data from **Google Ads**, **Facebook Ads**, and **Google Sheets**.
+* 🎯 **Flexible Metric & Field Selection**: Customize Insights Levels, Fields, Metrics, Breakdowns, and Action Breakdowns to pull exactly what you need.
+* ⚡ **SQL Data Cleaning & Transformation**: Built-in SQL editor powered by Google BigQuery data warehouse for filtering, cleaning, and joining multi-platform data.
+* 🔄 **Automated Export & Scheduling**: Schedule cron sync jobs to automatically overwrite or append clean SQL query results into specified Google Sheets.
 
-- Current counts of **Clients**, **Connections**, and **Queries**
-- Latest error messages
+---
 
-This allows users to monitor the system in real time and quickly identify and fix issues.
+## ☁️ Cloud Infrastructure & Tech Stack
 
-## Clients
+Built on a modern **100% Serverless** architecture and managed via **Infrastructure as Code (IaC)** for minimum maintenance and operational costs:
 
-To use LaLaE, users must first create a **Client**.
+```
+[ Marketing APIs / Sheets ] ──> [ GCP Cloud Run (Web API) ] ──> [ BigQuery Warehouse & SQL ] ──> [ Google Sheets ]
+                                       ▲              │
+                              (Cron)   │              ▼  (Async Queue)
+                              [ GCP Cloud Scheduler ]   [ GCP Cloud Tasks ]
+```
 
-Once created, LaLaE provisions a dedicated **BigQuery dataset** for that user and Client. All **Connections** and **Queries** created under this Client are scoped to this dataset.
+* **GCP Serverless Infrastructure**:
+  * **GCP Cloud Run**: Auto-scaling containerized API service.
+  * **GCP Cloud Tasks & Cloud Scheduler**: Replaced legacy Celery/Redis for cloud-native queue processing and cron scheduling.
+  * **Google BigQuery**: Enterprise data warehouse and SQL query engine.
+* **Infrastructure as Code (IaC)**:
+  * **Terraform**: Provisioning Cloud Tasks queues, Cloud Scheduler jobs, and IAM roles.
+* **Full-Stack Technology**:
+  * **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS, Ace SQL Editor (Hosted on Vercel)
+  * **Backend**: Python 3.11, Django 5, Django REST Framework, JWT Authentication
 
-Authorization records for ad accounts are also managed through the Client. Future updates will include **dataset sharing** for better team collaboration.
+---
 
-## Connections
+## 🚀 30-Second Quick Local Demo Guide
 
-LaLaE provides API connections to advertising and data sources. Currently supported:
+The repository includes a **Zero-Backend-Dependency Mock Mode**. You don't need Python, Django, GCP credentials, or PostgreSQL setup to explore the entire UI and ETL workflow!
 
-- Google Ads
-- Facebook Ads
-- Google Sheets
+### Quick Start Steps
 
-> Additional ad platforms will be added in the future.
+```bash
+# 1. Clone GitHub Repository
+git clone https://github.com/Gibon4385/lalae-data-platform.git
+cd lalae-data-platform/frontend
 
-The **Connections** page displays all existing connections, their associated **datasets**, and the most recent sync logs.
+# 2. Setup Mock Environment File
+cp .env.example .env
 
-### Google Ads
+# 3. Install Dependencies and Run Dev Server
+npm install
+npm run dev
+```
 
-- Requires user authorization to access Google Ads data.
-- LaLaE stores the **active token** and **refresh token** securely, refreshing tokens automatically when needed.
-- After authorization, users input their Google Ads account ID and select the **Report Level** with desired **metrics**, **segments**, and **attributes**.
-- Users can configure how often to pull data from Google Ads to update the **BigQuery** dataset.
+### 🎯 Demo Instructions
+1. Open your browser and navigate to `http://localhost:3000`.
+2. On the login page, **enter any email and password** to log in automatically.
+3. Explore the full platform:
+   * **Client & Connection Wizard**: Create Google Ads / Facebook Ads connections and experience field/level selection.
+   * **SQL Query Editor**: Test the live SQL editor, history logs, and export settings.
 
-> _Note: Currently, LaLaE's developer token is approved only for test accounts and cannot fetch production data._
+> ⚠️ **Demo Mode Limitations**  
+> The default local demo mode (`NEXT_PUBLIC_USE_MOCK=true`) is designed for fast UI/UX demonstration. Without a running backend or cloud credentials, it **does not send live API requests to external platforms (Google Ads API, Meta API, or BigQuery)**. For production deployment details, see below.
 
-### Facebook Ads
+---
 
-- Users authorize LaLaE to access their Facebook Ads data.
-- After authorization, LaLaE fetches the user's available ad accounts.
-- Users select the desired account via dropdown, specify the **Insights Level**, and choose **Fields**, **Breakdowns**, and **Action Breakdowns**.
-- Users can configure the sync frequency to update their **BigQuery** dataset with Facebook Ads data.
+## 🛠️ Production Deployment Overview
 
-### Google Sheets
+To deploy to production with real Google Ads / Facebook / BigQuery integrations:
 
-- Users must add the specified LaLaE service email to their Google Sheet and grant **Editor** or higher permissions.
-- The **General Access** setting must be configured as **Anyone with the link** to allow LaLaE to read data.
-- Users specify column headers (comma-separated) and corresponding data types. BigQuery uses these settings to create the dataset schema.
-- Sync frequency can be scheduled to keep the dataset up to date in BigQuery.
+### 1. 🗄️ Database Setup (Supabase / PostgreSQL)
+* No historical database backup file is needed. Create a fresh PostgreSQL instance on [Supabase](https://supabase.com), copy credentials to `backend/.env`, and run:
+  ```bash
+  python manage.py migrate
+  python manage.py createsuperuser
+  ```
 
-## Queries
+### 2. ☁️ GCP Setup (Terraform)
+* Enable Cloud Run, Cloud Tasks, Cloud Scheduler, and BigQuery APIs.
+* Configure `terraform/terraform.tfvars` and run:
+  ```bash
+  terraform init
+  terraform apply
+  ```
 
-Once a **Connection** successfully syncs data to BigQuery, users can:
-
-- Run SQL **queries** to clean, transform, and merge data.
-- Define output frequency to automate exports.
-
-Currently, exports are supported only to **Google Sheets**. To set this up:
-
-- Add the LaLaE service email to the target Google Sheet with **Editor** access.
-- Set **General Access** to **Anyone with the link**.
-- Specify the Google Sheet ID and the **tab name**.
-- Choose whether to **append** new data or overwrite.
+### 3. 🚀 Application Deployment
+* **Backend**: Build and deploy container image to GCP Cloud Run via Cloud Build.
+* **Frontend**: Set `NEXT_PUBLIC_USE_MOCK=false` and point `NEXT_PUBLIC_API_URL` to your Cloud Run URL, then deploy to Vercel.
