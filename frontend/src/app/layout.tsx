@@ -32,7 +32,7 @@ export default function RootLayout({
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className="bg-background font-sans antialiased">
+      <body className="bg-background font-sans antialiased" suppressHydrationWarning>
         <AuthProvider>
           <ProtectedFetchProvider>
             <div className="flex flex-col min-h-screen">
