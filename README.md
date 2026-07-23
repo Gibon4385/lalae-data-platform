@@ -1,8 +1,9 @@
 # LaLaE Data Platform
 
+[English](./README.md) | [繁體中文](./README_ZH.md)
+
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-orange?style=for-the-badge&logo=vercel)](https://v0-data-platform-test.vercel.app/)
 [![GCP Architecture](https://img.shields.io/badge/GCP-Serverless-blue?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/)
-[![Language: Chinese](https://img.shields.io/badge/Document-繁體中文-green)](./README_ZH.md)
 
 > **An All-in-One Automated ETL Data Pipeline Platform for Marketing & Data Teams**  
 > Connect multi-channel ad APIs, customize requested fields and metrics, clean and transform data with BigQuery SQL, and automatically export scheduled results to Google Sheets.
