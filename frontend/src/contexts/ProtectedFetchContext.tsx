@@ -20,14 +20,14 @@ const mockClients = [
 ];
 
 const mockConnections = [
-  { id: 101, name: "Google Ads Core Sync", client_name: "LalaE E-commerce Brand", data_source: { id: 1, name: "Google Ads", display_name: "Google Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
-  { id: 102, name: "Facebook Ads Conversions", client_name: "CyberTech AI Solution", data_source: { id: 2, name: "Facebook Ads", display_name: "Facebook Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
-  { id: 103, name: "Google Analytics 4 Export", client_name: "OmniMedia Ads Group", data_source: { id: 3, name: "GA4", display_name: "Google Analytics 4" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
+  { id: 101, name: "Google Ads Core Sync", display_name: "Google Ads Core Sync", target_dataset_id: "client_lalae_shop_2026", client_name: "LalaE E-commerce Brand", data_source: { id: 1, name: "Google Ads", display_name: "Google Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T12:00:00Z" },
+  { id: 102, name: "Facebook Ads Conversions", display_name: "Facebook Ads Conversions", target_dataset_id: "client_cybertech_ai_2026", client_name: "CyberTech AI Solution", data_source: { id: 2, name: "Facebook Ads", display_name: "Facebook Ads" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T11:45:00Z" },
+  { id: 103, name: "Google Analytics 4 Export", display_name: "Google Analytics 4 Export", target_dataset_id: "client_omnimedia_ads_2026", client_name: "OmniMedia Ads Group", data_source: { id: 3, name: "GA4", display_name: "Google Analytics 4" }, status: "ACTIVE", is_enabled: true, last_run_at: "2026-07-23T10:30:00Z" },
 ];
 
 const mockQueries = [
-  { id: 201, name: "Daily Ad Spend & ROAS Aggregator", client_name: "LalaE E-commerce Brand", query_text: "SELECT date, SUM(cost) as total_cost FROM `my-project.lalae.ad_data` GROUP BY date", created_at: "2026-04-01T09:00:00Z" },
-  { id: 202, name: "Customer Lifetime Value Predictor", client_name: "CyberTech AI Solution", query_text: "SELECT user_id, SUM(amount) as ltv FROM `my-project.cybertech.orders` GROUP BY user_id", created_at: "2026-05-12T16:20:00Z" },
+  { id: 201, name: "Daily Ad Spend & ROAS Aggregator", displayName: "Daily Ad Spend & ROAS Aggregator", client_name: "LalaE E-commerce Brand", config: { sql_query: "SELECT date, SUM(cost) as total_cost FROM `my-project.lalae.ad_data` GROUP BY date", schedule_type: "PERIODIC", cron_schedule: "0 0 * * *", output_target: "GOOGLE_SHEET" }, created_at: "2026-04-01T09:00:00Z" },
+  { id: 202, name: "Customer Lifetime Value Predictor", displayName: "Customer Lifetime Value Predictor", client_name: "CyberTech AI Solution", config: { sql_query: "SELECT user_id, SUM(amount) as ltv FROM `my-project.cybertech.orders` GROUP BY user_id", schedule_type: "ONCE", cron_schedule: null, output_target: "NONE" }, created_at: "2026-05-12T16:20:00Z" },
 ];
 
 const mockConnectionExecutions = [
@@ -112,11 +112,14 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
         } else if (url.includes('/test') || url.includes('/run') || url.includes('/preview')) {
           payload = mockQueryResult;
         } else if (url.includes('/clients/')) {
-          payload = mockClients;
+          const idMatch = url.match(/\/clients\/(\d+)/);
+          payload = idMatch ? (mockClients.find(c => c.id === parseInt(idMatch[1])) || mockClients[0]) : mockClients;
         } else if (url.includes('/connections/')) {
-          payload = mockConnections;
+          const idMatch = url.match(/\/connections\/(\d+)/);
+          payload = idMatch ? (mockConnections.find(c => c.id === parseInt(idMatch[1])) || mockConnections[0]) : mockConnections;
         } else if (url.includes('/queries/')) {
-          payload = mockQueries;
+          const idMatch = url.match(/\/queries\/(\d+)/);
+          payload = idMatch ? (mockQueries.find(q => q.id === parseInt(idMatch[1])) || mockQueries[0]) : mockQueries;
         } else if (url.includes('/dashboard/')) {
           payload = mockDashboardData;
         }
