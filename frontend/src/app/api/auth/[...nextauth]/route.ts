@@ -59,12 +59,8 @@ const authOptions: AuthOptions = {
             refresh_token: "mock-jwt-refresh-token-12345",
           };
         }
-          // console.log('Attempting login with dj-rest-auth:', { 
-          //   email: credentials.email,
-          //   url: `${process.env.NEXT_PUBLIC_TO_BACKEND_URL}/auth/login/`
-          // });
 
-          // dj-rest-auth 登入端點
+        try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_TO_BACKEND_URL}/auth/login/`, {
             method: 'POST',
             body: JSON.stringify({
