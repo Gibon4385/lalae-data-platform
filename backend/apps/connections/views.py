@@ -14,7 +14,6 @@ from django.views.decorators.http import require_http_methods
 import facebook
 import requests
 from allauth.socialaccount.models import SocialApp, SocialToken
-from django_redis.exceptions import ConnectionInterrupted
 from allauth.socialaccount.models import SocialAccount, SocialToken
 from allauth.socialaccount.providers.oauth2.views import OAuth2CallbackView
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -112,7 +111,7 @@ class ConnectionViewSet(viewsets.ModelViewSet):
         cached_data = None
         try:
             cached_data = cache.get(cache_key)
-        except (ConnectionInterrupted, Exception) as e:
+        except Exception as e:
             logger.warning(f"Cache get failed for user {user.id}: {e}")
 
         if cached_data:
@@ -134,7 +133,7 @@ class ConnectionViewSet(viewsets.ModelViewSet):
         try:
             cache.set(cache_key, response_data, 60 * 5)
             logger.info(f"Connections list for user {user.id} cached successfully.")
-        except (ConnectionInterrupted, Exception) as e:
+        except Exception as e:
             logger.warning(f"Cache set failed for user {user.id}: {e}")
 
         return Response(response_data)

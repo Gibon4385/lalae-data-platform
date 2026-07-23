@@ -1,0 +1,5 @@
+project_id          = "your-gcp-project-id"
+region              = "asia-east1"
+cloud_run_url       = "https://lalae-web-302883063343.asia-east1.run.app"
+task_runner_secret  = "m_ZcOUWsSCZ4_Ossl_gmRLhLX8BE8sAvPvhfU6q9rZU"
+periodic_sync_cron  = "* * * * *"

@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
 import environ
-from celery.schedules import crontab
 
 # Initialize environ
 env = environ.Env(
@@ -26,7 +25,6 @@ env = environ.Env(
     GOOGLE_ADS_DEVELOPER_TOKEN=(str, ""), 
     FACEBOOK_APP_ID=(str, ""), 
     FACEBOOK_APP_SECRET=(str, ""), 
-    REDIS_URL=(str, "redis://localhost:6379"),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,18 +36,13 @@ TIME_ZONE = "Asia/Taipei"
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Get environment variables
-GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID")
+GOOGLE_CLOUD_PROJECT_ID = env("GOOGLE_CLOUD_PROJECT_ID", default="")
 # GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
-GOOGLE_ADS_DEVELOPER_TOKEN = env("GOOGLE_ADS_DEVELOPER_TOKEN")
+GOOGLE_ADS_DEVELOPER_TOKEN = env("GOOGLE_ADS_DEVELOPER_TOKEN", default="")
 
-FACEBOOK_APP_ID = env("FACEBOOK_APP_ID")
-FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET")
-REDIS_URL = env("REDIS_URL")
-
-
-REDIS_CACHE_URL = f"{REDIS_URL}/1"
-REDIS_CELERY_URL = f"{REDIS_URL}/0?ssl_cert_reqs=CERT_NONE"
+FACEBOOK_APP_ID = env("FACEBOOK_APP_ID", default="")
+FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET", default="")
 
 FRONTEND_BASE_URL = "https://lalae-data-platform-gfwm11ifr-pochaowangs-projects.vercel.app/"
 # FRONTEND_BASE_URL = "http://localhost:3000"
@@ -87,6 +80,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'lalae-web-302883063343.asia-east1.run.app',
+    '*',
 ]
 
 # Application definition
@@ -100,8 +94,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Custom Django apps
-    "django_celery_results",
-    "django_celery_beat",
     "django.contrib.sites",
     # Rest Framework
     "rest_framework",
@@ -123,6 +115,7 @@ INSTALLED_APPS = [
     "apps.dashboard",
     "apps.queries",
     "apps.connections",
+    "apps.task_dispatcher",
 
     "corsheaders"
 ]
@@ -167,17 +160,24 @@ WSGI_APPLICATION = "main.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres.wprsvlusgasymujtdxgk",
-        "PASSWORD": env("SUPABASE_DATABASE_PASSWORD"),
-        "HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
-        "PORT": "5432",
-        'ATOMIC_REQUESTS': True,
+# Django 系統主資料庫 (儲存用戶登入與系統設定檔)
+# 若有提供 SUPABASE_DATABASE_PASSWORD 則連線至 Supabase PostgreSQL，否則使用 SQLite
+if env("SUPABASE_DATABASE_PASSWORD", default=""):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DB_NAME", default="postgres"),
+            "USER": env("DB_USER", default="postgres.aypqmeayegmjkgxuraea"),
+            "PASSWORD": env("SUPABASE_DATABASE_PASSWORD"),
+            "HOST": env("DB_HOST", default="aws-1-ap-northeast-2.pooler.supabase.com"),
+            "PORT": env("DB_PORT", default="5432"),
+            'ATOMIC_REQUESTS': True,
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": env.db("DATABASE_URL", default=f"sqlite:///{BASE_DIR}/db.sqlite3")
+    }
 
 
 # Password validation
@@ -227,51 +227,9 @@ PASSWORD_RESET_TIMEOUT = 259200  # 3 days
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_CACHE_URL, # 建議使用不同的資料庫編號
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "CONNECTION_POOL_KWARGS": {
-                "max_connections": 20,  # Upstash 有連接限制，建議降低
-                "retry_on_timeout": True,
-                "socket_connect_timeout": 5,
-                "socket_timeout": 5,
-                "health_check_interval": 30,
-            },
-            "IGNORE_EXCEPTIONS": True,
-            "SSL_CERT_REQS": None,
-        },
-        "KEY_PREFIX": "django_api_cache", # 可選：為您的快取鍵添加前綴
-        "TIMEOUT": 60 * 60 # 預設快取有效期，例如 1 小時
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
-
-# Celery Configuration
-# CELERY_BROKER_URL = "redis://localhost:6379/0"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
-CELERY_BROKER_URL = REDIS_CELERY_URL
-CELERY_RESULT_BACKEND = REDIS_CELERY_URL
-
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = TIME_ZONE
-
-CELERY_BROKER_TRANSPORT = "redis"
-CELERY_BROKER_TRANSPORT_OPTIONS = {
-    "visibility_timeout": 3600,
-    "polling_interval": 1,
-}
-
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
-
-# CELERY_BEAT_SCHEDULE = {
-#     'schedule-periodic-syncs': {
-#         'task': 'apps.connections.tasks.schedule_periodic_syncs_task',
-#         'schedule': crontab(minute='*'),  # 每分鐘執行一次
-#     },
-# }
 
 
 SITE_ID = 1
@@ -309,8 +267,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"  # For production
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = "dark781228@gmail.com"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
@@ -400,20 +358,15 @@ LOGGING = {
             "level": "DEBUG", 
             "propagate": False,
         },
-        'celery': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
     },
 }
 
 
-FACEBOOK_APP_ID = env("FACEBOOK_APP_ID")
-FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET")
-FACEBOOK_ACCESS_TOKEN = env('FACEBOOK_ACCESS_TOKEN')
+FACEBOOK_APP_ID = env("FACEBOOK_APP_ID", default="")
+FACEBOOK_APP_SECRET = env("FACEBOOK_APP_SECRET", default="")
+FACEBOOK_ACCESS_TOKEN = env('FACEBOOK_ACCESS_TOKEN', default="")
 # FACEBOOK_DEVELOPER_ACCESS_TOKEN = env('FACEBOOK_DEVELOPER_ACCESS_TOKEN')
-FACEBOOK_AD_ACCOUNT_ID = env('FACEBOOK_AD_ACCOUNT_ID')
+FACEBOOK_AD_ACCOUNT_ID = env('FACEBOOK_AD_ACCOUNT_ID', default="")
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True

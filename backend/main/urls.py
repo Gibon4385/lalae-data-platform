@@ -64,6 +64,7 @@ urlpatterns = [
     path('dashboard/', include('apps.dashboard.urls', namespace='dashboard')),
     path('queries/', include('apps.queries.urls', namespace='queries')),
     path('connections/', include('apps.connections.urls', namespace='connections')),
+    path('task-runner/', include('apps.task_dispatcher.urls')),
 
     # Old
     # path('api/users/', include('apps.users.urls')),

@@ -1,0 +1,5 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/my-project-for-bigquery-445809/lalae-web:latest', '-f', 'Dockerfile.web', '.']
+images:
+  - 'gcr.io/my-project-for-bigquery-445809/lalae-web:latest'

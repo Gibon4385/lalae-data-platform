@@ -41,7 +41,13 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 
 from .tasks import run_bigquery_query_task
-from django_celery_beat.models import PeriodicTask, CrontabSchedule
+try:
+    from django_celery_beat.models import PeriodicTask, CrontabSchedule
+    HAS_CELERY_BEAT = True
+except ImportError:
+    HAS_CELERY_BEAT = False
+    PeriodicTask = None
+    CrontabSchedule = None
 from django.db import transaction
 from django.conf import settings
 import hashlib
@@ -710,7 +716,7 @@ def api_save_draft(request):
                 query_def.save() #
 
             # 如果是排程任務，更新或創建 Celery PeriodicTask
-            if schedule_type == "PERIODIC" and cron_schedule_str:
+            if HAS_CELERY_BEAT and schedule_type == "PERIODIC" and cron_schedule_str:
                 # 創建或獲取 CrontabSchedule
                 schedule, _ = CrontabSchedule.objects.get_or_create(
                     minute=schedule_minute,
@@ -733,7 +739,7 @@ def api_save_draft(request):
                         'description': f"Scheduled run for Query: {query_def.name}"
                     }
                 )
-            else: # 如果頻率是 "Once" 或者從 "Periodic" 改為 "Once"
+            elif HAS_CELERY_BEAT: # 如果頻率是 "Once" 或者從 "Periodic" 改為 "Once"
                 # 刪除對應的 PeriodicTask (如果存在)
                 task_name = f"query_definition_{query_def.id}_periodic_task"
                 PeriodicTask.objects.filter(name=task_name).delete()
@@ -1093,8 +1099,9 @@ def api_delete_query(request, pk):
 
         with transaction.atomic():
             # 刪除 Celery PeriodicTask (如果存在)
-            task_name = f"query_definition_{query_def.id}_periodic_task"
-            PeriodicTask.objects.filter(name=task_name).delete()
+            if HAS_CELERY_BEAT:
+                task_name = f"query_definition_{query_def.id}_periodic_task"
+                PeriodicTask.objects.filter(name=task_name).delete()
 
             # 刪除 QueryDefinition
             query_def.delete()

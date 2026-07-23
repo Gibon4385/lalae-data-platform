@@ -34,3 +34,10 @@ __pycache__/
 **/forms.py
 
 README_ZH.md
+terraform/terraform.tfvars
+.terraform/
+*.tfstate
+*.tfstate.*
+db_cluster-07-09-2025@16-10-22.backup.gz
+wprsvlusgasymujtdxgk.storage.zip
+memo.md
