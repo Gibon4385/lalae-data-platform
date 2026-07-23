@@ -144,6 +144,7 @@ const authOptions: AuthOptions = {
             token.accessToken = user.access_token;
             token.refreshToken = user.refresh_token;
             token.user = user.user; // 保存從 Django 來的詳細使用者資料
+            token.accessTokenExpires = Date.now() / 1000 + 86400 * 365; // 設置 1 年效期防止觸發未驗證過期
             break;
 
             case 'google':
@@ -199,8 +200,8 @@ const authOptions: AuthOptions = {
         }
 
 
-  // Check if access token is expired and refresh it
-  if (token.accessToken && token.refreshToken && isTokenExpired(token.accessTokenExpires)) {
+  // Check if access token is expired and refresh it (Skip in MOCK_MODE)
+  if (process.env.NEXT_PUBLIC_USE_MOCK !== "true" && token.accessToken && token.refreshToken && isTokenExpired(token.accessTokenExpires)) {
     // console.log('--- [JWT] Access token expired or near expiration. Attempting to refresh.');
     try {
       const refreshRes = await fetch(`${process.env.NEXT_PUBLIC_TO_BACKEND_URL}/auth/token/refresh/`, {

@@ -20,6 +20,15 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
   // 只有當 session?.accessToken 改變時，這個函式才會被重新建立
   const protectedFetch = useCallback(
     async (url: string, options: RequestInit = {}) => {
+      // MOCK 模式：免去 Token 防護檢查，直接允許請求
+      if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
+        console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
+        return new Response(JSON.stringify({ status: "success", data: [] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
       if (status !== 'authenticated' || !session?.accessToken) {
         // 如果沒有有效的 session，直接拋出錯誤，讓呼叫它的地方去處理
         throw new Error('User is not authenticated.');
