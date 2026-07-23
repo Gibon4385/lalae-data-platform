@@ -144,6 +144,65 @@ const mockQueryResult = {
   message: "Query executed successfully. Returned 5 rows in 1.2s."
 };
 
+const mockGoogleAdsResources = [
+  { name: "campaign", display: "Campaign (廣告活動)" },
+  { name: "ad_group", display: "Ad Group (廣告群組)" },
+  { name: "ad_group_ad", display: "Ad (廣告)" },
+  { name: "keyword_view", display: "Keyword (關鍵字)" }
+];
+
+const mockGoogleAdsCompatibleFields = {
+  metrics: [
+    { name: "metrics.clicks", display: "Clicks (點擊數)" },
+    { name: "metrics.impressions", display: "Impressions (曝光數)" },
+    { name: "metrics.cost_micros", display: "Cost (費用)" },
+    { name: "metrics.conversions", display: "Conversions (轉化數)" },
+    { name: "metrics.conversions_value", display: "Conversion Value (轉化金額)" },
+    { name: "metrics.ctr", display: "CTR (點擊率)" },
+    { name: "metrics.average_cpc", display: "Avg CPC (平均點擊成本)" }
+  ],
+  segments: [
+    { name: "segments.date", display: "Date (日期)" },
+    { name: "segments.device", display: "Device (裝置類型)" },
+    { name: "segments.ad_network_type", display: "Network (廣告聯播網)" }
+  ],
+  attributes: [
+    { name: "campaign.id", display: "Campaign ID (廣告活動 ID)" },
+    { name: "campaign.name", display: "Campaign Name (廣告活動名稱)" },
+    { name: "campaign.status", display: "Campaign Status (狀態)" }
+  ]
+};
+
+const mockFBAdAccounts = [
+  { id: "act_9876543210", name: "LalaE Global Facebook Ads (act_9876543210)" },
+  { id: "act_1234567890", name: "CyberTech Taiwan Marketing (act_1234567890)" }
+];
+
+const mockFBAllFields = {
+  campaign: {
+    fields: [
+      { name: "campaign_name", label: "Campaign Name (廣告活動名稱)" },
+      { name: "spend", label: "Spend (花費金額)" },
+      { name: "impressions", label: "Impressions (曝光數)" },
+      { name: "clicks", label: "Clicks (點擊數)" },
+      { name: "reach", label: "Reach (觸及人數)" },
+      { name: "frequency", label: "Frequency (頻率)" },
+      { name: "conversions", label: "Conversions (轉化數)" },
+      { name: "purchase_roas", label: "ROAS (購物投資報酬率)" }
+    ],
+    breakdowns: [
+      { name: "age", label: "Age (年齡層)" },
+      { name: "gender", label: "Gender (性別)" },
+      { name: "country", label: "Country (國家)" },
+      { name: "publisher_platform", label: "Platform (平台: FB/IG)" }
+    ],
+    action_breakdowns: [
+      { name: "action_type", label: "Action Type (動作類型)" },
+      { name: "action_device", label: "Action Device (動作裝置)" }
+    ]
+  }
+};
+
 const mockDashboardData = {
   clients: mockClients,
   connections: mockConnections,
@@ -161,7 +220,15 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('/schema')) {
+        if (url.includes('google-ads-resources')) {
+          payload = mockGoogleAdsResources;
+        } else if (url.includes('get-compatible-google-ads-fields')) {
+          payload = mockGoogleAdsCompatibleFields;
+        } else if (url.includes('get-facebook-ad-accounts')) {
+          payload = mockFBAdAccounts;
+        } else if (url.includes('facebook-all-fields')) {
+          payload = mockFBAllFields;
+        } else if (url.includes('/schema')) {
           payload = mockSchema;
         } else if (url.includes('/test') || url.includes('/run') || url.includes('/preview')) {
           payload = mockQueryResult;
