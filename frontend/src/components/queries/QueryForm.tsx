@@ -158,8 +158,8 @@ export default function QueryForm({ client, initialData, queryId }: QueryFormPro
     };
 }, [initialData, localStorageKey]);
 
-  const [queryName, setQueryName] = useState(getInitialState().queryName);
-  const [sqlQuery, setSqlQuery] = useState(getInitialState().sqlQuery);
+  const [queryName, setQueryName] = useState(getInitialState().queryName || '');
+  const [sqlQuery, setSqlQuery] = useState(getInitialState().sqlQuery || '');
   const [expandedTables, setExpandedTables] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [frequency, setFrequency] = useState(getInitialState().frequency);
@@ -859,9 +859,8 @@ export default function QueryForm({ client, initialData, queryId }: QueryFormPro
             </div>
 
             <div className="mt-4 flex items-center space-x-6 text-sm">
-              <span className="text-gray-400">Lines: {sqlQuery.split('\n').length}</span>
-              <span className="text-gray-400">Characters: {sqlQuery.length}</span>
-              
+              <span className="text-gray-400">Lines: {(sqlQuery || '').split('\n').length}</span>
+              <span className="text-gray-400">Characters: {(sqlQuery || '').length}</span>
             </div>
           </div>
 
