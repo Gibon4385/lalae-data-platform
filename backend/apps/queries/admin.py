@@ -17,6 +17,8 @@ def get_allowed_dataset_ids_for_user(user, check_edit_manage_rights=False):
     Returns None if superuser (no restrictions).
     Returns an empty list if no permissions.
     """
+    if not user or not getattr(user, "is_authenticated", False):
+        return []
     if user.is_superuser:
         return None  # No restriction for superuser
 
@@ -37,6 +39,8 @@ def get_allowed_dataset_ids_for_user(user, check_edit_manage_rights=False):
 
 def user_has_general_access(user):
     """Checks if the user has access to any dataset."""
+    if not user or not getattr(user, "is_authenticated", False):
+        return False
     if user.is_superuser:
         return True
     return ClientSetting.objects.filter(
@@ -46,6 +50,8 @@ def user_has_general_access(user):
 
 def user_can_modify_dataset(user, dataset_id):
     """Checks if the user has modification rights for a specific dataset_id."""
+    if not user or not getattr(user, "is_authenticated", False):
+        return False
     if user.is_superuser:
         return True
     if not dataset_id:
