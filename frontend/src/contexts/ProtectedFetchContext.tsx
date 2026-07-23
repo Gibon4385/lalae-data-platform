@@ -269,7 +269,7 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('execution_history') || url.includes('/history')) {
+        if (url.includes('/executions/') || url.includes('execution_history') || url.includes('/history')) {
           payload = mockQueryExecutionHistoryResponse;
         } else if (url.includes('google-ads-resources')) {
           payload = mockGoogleAdsResources;

@@ -448,7 +448,7 @@ export default function QueryList() {
         throw new Error(errorData.message || `Request failed with status ${res.status}`);
       }
       const data: QueryExecutionHistoryResponse = await res.json();
-      setHistory(data.executions);
+      setHistory(data.executions || []);
     } catch (err: any) {
       setHistoryError(err.message);
     } finally {
@@ -740,7 +740,7 @@ export default function QueryList() {
                             )}
 
                             {!historyLoading && !historyError && (
-                              history.length === 0 ? (
+                              (!history || history.length === 0) ? (
                                 <div className="text-center text-gray-500 py-4">No execution history found.</div>
                               ) : (
                                 <div>
