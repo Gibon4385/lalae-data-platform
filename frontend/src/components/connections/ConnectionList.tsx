@@ -188,7 +188,8 @@ export default function ConnectionList() {
             const errorData = await res.json();
             throw new Error(errorData.error || `Request failed with status ${res.status}`);
         }
-        setHistory(await res.json());
+        const data = await res.json();
+        setHistory(Array.isArray(data) ? data : (data.executions || []));
     } catch (err: any) {
         setHistoryError(err.message);
     } finally {
@@ -371,7 +372,7 @@ export default function ConnectionList() {
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
-                                                                                {history.map(exec => (
+                                                                                {(Array.isArray(history) ? history : []).map(exec => (
                                                                                     <tr key={exec.id} className="border-b border-gray-700/30 last:border-b-0">
                                                                                         <td className="py-3 px-4">{getStatusBadge(exec.status)}</td>
                                                                                         <td className="py-3 px-4 text-gray-300 text-sm">{formatDate(exec.started_at)}</td>

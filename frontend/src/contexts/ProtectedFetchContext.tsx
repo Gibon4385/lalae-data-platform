@@ -260,6 +260,25 @@ const mockDashboardData = {
   recentQueryExecutions: mockQueryExecutions,
 };
 
+const mockConnectionExecutionsList = [
+  {
+    id: 301,
+    started_at: "2026-07-23T12:00:00Z",
+    finished_at: "2026-07-23T12:00:04Z",
+    status: "SUCCESS",
+    message: "Synced 12,450 records successfully to BigQuery",
+    triggered_by: { id: 1, username: "lalae-tester", email: "lalae-tester@example.com" }
+  },
+  {
+    id: 302,
+    started_at: "2026-07-22T12:00:00Z",
+    finished_at: "2026-07-22T12:00:03Z",
+    status: "SUCCESS",
+    message: "Synced 8,920 records successfully to BigQuery",
+    triggered_by: null
+  }
+];
+
 export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
   const { data: session, status } = useSession();
 
@@ -269,7 +288,11 @@ export function ProtectedFetchProvider({ children }: { children: ReactNode }) {
       if (process.env.NEXT_PUBLIC_USE_MOCK === "true") {
         console.log(`[ProtectedFetchContext] MOCK_MODE intercepting request: ${url}`);
         let payload: any = mockDashboardData;
-        if (url.includes('/executions/') || url.includes('execution_history') || url.includes('/history')) {
+        if (url.includes('/connections/') && url.includes('executions')) {
+          payload = mockConnectionExecutionsList;
+        } else if (url.includes('/queries/') && url.includes('executions')) {
+          payload = mockQueryExecutionHistoryResponse;
+        } else if (url.includes('execution_history') || url.includes('/history')) {
           payload = mockQueryExecutionHistoryResponse;
         } else if (url.includes('google-ads-resources')) {
           payload = mockGoogleAdsResources;
