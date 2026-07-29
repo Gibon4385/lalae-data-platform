@@ -4,6 +4,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-orange?style=for-the-badge&logo=vercel)](https://v0-data-platform-test.vercel.app/)
 [![GCP Architecture](https://img.shields.io/badge/GCP-Serverless-blue?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 
 > **An All-in-One Automated ETL Data Pipeline Platform for Marketing & Data Teams**  
 > Connect multi-channel ad APIs, customize requested fields and metrics, clean and transform data with BigQuery SQL, and automatically export scheduled results to Google Sheets.
@@ -101,4 +102,11 @@ When connecting to production APIs, configure the following in `backend/.env`:
 * **Google Ads**: Requires `GOOGLE_ADS_DEVELOPER_TOKEN` and OAuth Client ID/Secret. Tokens (Access & Refresh) are managed automatically after user authorization.
 * **Facebook Ads**: Requires `FACEBOOK_APP_ID` and `FACEBOOK_APP_SECRET` (Meta App Credentials) for OAuth account access.
 * **Google Sheets**: Requires sharing the target Google Sheet with the designated GCP Service Account Email (as Editor) for SQL data reading and export.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
 

@@ -4,6 +4,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-orange?style=for-the-badge&logo=vercel)](https://v0-data-platform-test.vercel.app/)
 [![GCP Architecture](https://img.shields.io/badge/GCP-Serverless-blue?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 
 > **マーケティング＆データチーム向け オールインワン自動化 ETL データパイプラインプラットフォーム**  
 > 複数チャネルの広告 API を自動連携し、取得項目を柔軟にカスタマイズ。BigQuery SQL でデータをクレンジング・変換し、Google スプレッドシートへ自動定期出力することで、データ運用の完全自動化を実現します。
@@ -102,4 +103,11 @@ npm run dev
 * **Google Ads**: `GOOGLE_ADS_DEVELOPER_TOKEN`（開発者トークン）および OAuth Client ID/Secret が必要。認証後、アクセストークンおよびリフレッシュトークンは自動管理されます。
 * **Facebook Ads**: OAuth 経由の広告アカウントアクセス用に `FACEBOOK_APP_ID` および `FACEBOOK_APP_SECRET`（Meta アプリ認証情報）が必要。
 * **Google Sheets**: SQL データの読み込みおよび自動出力用に、指定の GCP サービスアカウント Email を対象スプレッドシートの共有編集者として追加する必要があります。
+
+---
+
+## 📄 ライセンス (License)
+
+本プロジェクトは MIT ライセンスのもとで公開されています。詳細については [LICENSE](./LICENSE) ファイルを参照してください。
+
 

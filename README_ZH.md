@@ -4,6 +4,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-orange?style=for-the-badge&logo=vercel)](https://v0-data-platform-test.vercel.app/)
 [![GCP Architecture](https://img.shields.io/badge/GCP-Serverless-blue?style=for-the-badge&logo=googlecloud)](https://cloud.google.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 
 > **專為行銷與數據團隊打造的一站式 ETL 資料流水線平台**  
 > 自動串接多渠道廣告 API、彈性自訂擷取欄位、運用 BigQuery SQL 清理與轉換資料，並自動排程輸出至 Google Sheets，達成數據運營全自動化。
@@ -103,4 +104,11 @@ npm run dev
 * **Google Ads**：需提供 `GOOGLE_ADS_DEVELOPER_TOKEN`（開發者權牌）與 OAuth Client ID/Secret，使用者登入授權後系統自動維護 Access & Refresh Tokens。
 * **Facebook Ads**：需提供 `FACEBOOK_APP_ID` 與 `FACEBOOK_APP_SECRET`（Meta 應用程式憑證），透過 OAuth 取得廣告帳號存取權。
 * **Google Sheets**：需將指定的 GCP Service Account Email 新增為目標試算表的共用編輯者，供系統進行讀寫與 SQL 輸出。
+
+---
+
+## 📄 授權條款 (License)
+
+本專案採用 MIT 授權條款 - 詳情請參閱 [LICENSE](./LICENSE) 檔案。
+
 
